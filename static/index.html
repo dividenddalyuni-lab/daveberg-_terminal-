@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SERAPHIN TERMINAL</title>
+<link rel="stylesheet" href="/static/style.css" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<header class="header">
+  <div class="header-title">SERAPHIN TERMINAL</div>
+  <div class="header-clock" id="clock">--:--:--</div>
+</header>
+
+<main class="grid">
+  <section class="tile watchlist-tile">
+    <div class="tile-title">WATCHLIST</div>
+    <table class="watchlist-table">
+      <thead>
+        <tr>
+          <th>SYMBOL</th>
+          <th>PRICE</th>
+          <th>CHG</th>
+          <th>CHG %</th>
+        </tr>
+      </thead>
+      <tbody id="watchlist-body">
+      </tbody>
+    </table>
+  </section>
+
+  <section class="tile chart-tile">
+    <div class="tile-title">
+      <span id="chart-title">CHART</span>
+      <div class="range-buttons">
+        <button class="range-btn active" data-range="1M">1M</button>
+        <button class="range-btn" data-range="6M">6M</button>
+        <button class="range-btn" data-range="1J">1J</button>
+      </div>
+    </div>
+    <canvas id="price-chart"></canvas>
+  </section>
+
+  <section class="tile metrics-tile">
+    <div class="tile-title">KENNZAHLEN</div>
+    <div class="metrics-grid" id="metrics-body">
+      <div class="metric"><span class="metric-label">KGV</span><span class="metric-value" id="m-pe">--</span></div>
+      <div class="metric"><span class="metric-label">MARKET CAP</span><span class="metric-value" id="m-cap">--</span></div>
+      <div class="metric"><span class="metric-label">52W HIGH</span><span class="metric-value" id="m-high">--</span></div>
+      <div class="metric"><span class="metric-label">52W LOW</span><span class="metric-value" id="m-low">--</span></div>
+    </div>
+  </section>
+
+  <section class="tile news-tile">
+    <div class="tile-title">NEWS</div>
+    <div class="news-list" id="news-body">
+      <div class="news-empty">Ticker auswählen...</div>
+    </div>
+  </section>
+</main>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
