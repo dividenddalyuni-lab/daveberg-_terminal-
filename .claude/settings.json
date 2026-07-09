@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git add*)",
+      "Bash(git commit*)",
+      "Bash(git show*)",
+      "Bash(git branch*)",
+      "Bash(curl *)",
+      "Bash(python3 *)",
+      "Bash(pip *)",
+      "Bash(pip3 *)",
+      "Bash(uvicorn *)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(find *)",
+      "Bash(grep *)",
+      "Bash(mkdir -p *)",
+      "Bash(pkill -f *)",
+      "Bash(ps aux*)",
+      "Bash(sleep *)",
+      "Bash(echo *)",
+      "Read",
+      "Edit",
+      "Write",
+      "Skill(claude-api)",
+      "Skill(claude-api:*)",
+      "Skill(run)",
+      "Skill(run:*)"
+    ]
+  }
+}

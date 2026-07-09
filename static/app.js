@@ -4,6 +4,8 @@ const REFRESH_MS = 60000;
 let selectedSymbol = "AAPL";
 let selectedRange = "1M";
 let chartInstance = null;
+let analystHistory = [];
+let analystBusy = false;
 
 function fmtPrice(v) {
   if (v === null || v === undefined) return "--";
@@ -163,6 +165,97 @@ async function loadNews() {
   }
 }
 
+function fmtMacroPct(v) {
+  if (v === null || v === undefined) return "N/A";
+  return v.toFixed(2) + "%";
+}
+
+function fmtMacroPrice(v, decimals) {
+  if (v === null || v === undefined) return "N/A";
+  return v.toLocaleString("de-DE", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+}
+
+async function loadMacro() {
+  try {
+    const res = await fetch("/api/macro");
+    if (!res.ok) throw new Error("macro fetch failed");
+    const data = await res.json();
+    document.getElementById("mac-cpi-de").textContent = fmtMacroPct(data.cpi_de);
+    document.getElementById("mac-cpi-us").textContent = fmtMacroPct(data.cpi_us);
+    document.getElementById("mac-ecb").textContent = fmtMacroPct(data.ecb_rate);
+    document.getElementById("mac-fed").textContent = fmtMacroPct(data.fed_rate);
+    document.getElementById("mac-eurusd").textContent = fmtMacroPrice(data.eur_usd, 4);
+    document.getElementById("mac-bund").textContent = fmtMacroPct(data.bund_10y);
+    document.getElementById("mac-treasury").textContent = fmtMacroPct(data.treasury_10y);
+  } catch (err) {
+    console.error("macro load failed", err);
+    ["mac-cpi-de", "mac-cpi-us", "mac-ecb", "mac-fed", "mac-eurusd", "mac-bund", "mac-treasury"].forEach(
+      (id) => (document.getElementById(id).textContent = "N/A")
+    );
+  }
+}
+
+function renderAnalystMessage(role, text) {
+  const container = document.getElementById("analyst-messages");
+  const empty = container.querySelector(".analyst-empty");
+  if (empty) empty.remove();
+  const div = document.createElement("div");
+  div.className = `analyst-msg ${role}`;
+  div.textContent = text;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+  return div;
+}
+
+async function sendAnalystMessage(question) {
+  if (analystBusy || !question.trim()) return;
+  analystBusy = true;
+  const input = document.getElementById("analyst-input");
+  input.disabled = true;
+
+  renderAnalystMessage("user", question);
+  const pending = renderAnalystMessage("pending", "Analysiere...");
+  analystHistory.push({ role: "user", content: question });
+
+  try {
+    const res = await fetch("/api/analyst", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ symbol: selectedSymbol, messages: analystHistory }),
+    });
+    const data = await res.json();
+    pending.remove();
+    if (!res.ok) {
+      renderAnalystMessage("error", data.detail || "Fehler beim Abrufen der Analyse.");
+      analystHistory.pop();
+    } else {
+      renderAnalystMessage("assistant", data.reply);
+      analystHistory.push({ role: "assistant", content: data.reply });
+    }
+  } catch (err) {
+    console.error("analyst request failed", err);
+    pending.remove();
+    renderAnalystMessage("error", "Verbindung zum Analyst fehlgeschlagen.");
+    analystHistory.pop();
+  } finally {
+    analystBusy = false;
+    input.disabled = false;
+    input.focus();
+  }
+}
+
+function setupAnalystInput() {
+  const input = document.getElementById("analyst-input");
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.isComposing) {
+      e.preventDefault();
+      const question = input.value;
+      input.value = "";
+      sendAnalystMessage(question);
+    }
+  });
+}
+
 function refreshDetail() {
   loadChart();
   loadMetrics();
@@ -171,6 +264,9 @@ function refreshDetail() {
 
 function selectSymbol(symbol) {
   selectedSymbol = symbol;
+  document.getElementById("analyst-symbol-tag").textContent = symbol;
+  const hint = document.getElementById("analyst-hint-symbol");
+  if (hint) hint.textContent = symbol;
   refreshDetail();
   loadWatchlist();
 }
@@ -188,16 +284,24 @@ function setupRangeButtons() {
 
 function init() {
   setupRangeButtons();
+  setupAnalystInput();
   updateClock();
   setInterval(updateClock, 1000);
 
+  document.getElementById("analyst-symbol-tag").textContent = selectedSymbol;
+  const hint = document.getElementById("analyst-hint-symbol");
+  if (hint) hint.textContent = selectedSymbol;
+
   loadWatchlist();
   refreshDetail();
+  loadMacro();
 
   setInterval(() => {
     loadWatchlist();
     refreshDetail();
   }, REFRESH_MS);
+
+  setInterval(loadMacro, 3600000);
 }
 
 document.addEventListener("DOMContentLoaded", init);

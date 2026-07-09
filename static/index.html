@@ -58,6 +58,33 @@
       <div class="news-empty">Ticker auswählen...</div>
     </div>
   </section>
+
+  <section class="tile macro-tile">
+    <div class="tile-title">MAKRO</div>
+    <div class="metrics-grid macro-grid" id="macro-body">
+      <div class="metric"><span class="metric-label">CPI DEUTSCHLAND (YoY)</span><span class="metric-value" id="mac-cpi-de">--</span></div>
+      <div class="metric"><span class="metric-label">CPI USA (YoY)</span><span class="metric-value" id="mac-cpi-us">--</span></div>
+      <div class="metric"><span class="metric-label">EZB-LEITZINS</span><span class="metric-value" id="mac-ecb">--</span></div>
+      <div class="metric"><span class="metric-label">FED-LEITZINS</span><span class="metric-value" id="mac-fed">--</span></div>
+      <div class="metric"><span class="metric-label">EUR/USD</span><span class="metric-value" id="mac-eurusd">--</span></div>
+      <div class="metric"><span class="metric-label">10J BUND-RENDITE</span><span class="metric-value" id="mac-bund">--</span></div>
+      <div class="metric"><span class="metric-label">10J TREASURY-RENDITE</span><span class="metric-value" id="mac-treasury">--</span></div>
+    </div>
+  </section>
+
+  <section class="tile analyst-tile">
+    <div class="tile-title">
+      <span>ANALYST</span>
+      <span id="analyst-symbol-tag"></span>
+    </div>
+    <div class="analyst-messages" id="analyst-messages">
+      <div class="analyst-empty">Frage zu <span id="analyst-hint-symbol">AAPL</span> stellen...</div>
+    </div>
+    <div class="analyst-input-row">
+      <span class="analyst-prompt">&gt;</span>
+      <input type="text" id="analyst-input" class="analyst-input" placeholder="Frage eingeben und Enter drücken..." autocomplete="off" />
+    </div>
+  </section>
 </main>
 
 <script src="/static/app.js"></script>

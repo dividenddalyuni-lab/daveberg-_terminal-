@@ -46,12 +46,13 @@ html, body {
 .grid {
   display: grid;
   grid-template-columns: 1fr 2fr;
-  grid-template-rows: auto auto;
+  grid-template-rows: auto auto auto;
   gap: 10px;
   padding: 10px;
   grid-template-areas:
     "watchlist chart"
-    "metrics news";
+    "metrics news"
+    "macro analyst";
 }
 
 .tile {
@@ -65,6 +66,13 @@ html, body {
 .chart-tile { grid-area: chart; }
 .metrics-tile { grid-area: metrics; }
 .news-tile { grid-area: news; }
+.macro-tile { grid-area: macro; }
+.analyst-tile {
+  grid-area: analyst;
+  display: flex;
+  flex-direction: column;
+  height: 340px;
+}
 
 .tile-title {
   font-size: 13px;
@@ -207,6 +215,92 @@ html, body {
   font-size: 13px;
 }
 
+.macro-grid {
+  grid-template-columns: 1fr 1fr;
+}
+
+.analyst-tile .tile-title span#analyst-symbol-tag {
+  color: var(--amber);
+  font-size: 11px;
+}
+
+.analyst-messages {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-right: 2px;
+  margin-bottom: 8px;
+}
+
+.analyst-empty {
+  color: var(--amber-dim);
+  font-size: 13px;
+}
+
+.analyst-msg {
+  font-size: 13px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+
+.analyst-msg.user {
+  color: var(--amber);
+}
+
+.analyst-msg.user::before {
+  content: "> ";
+  color: var(--amber-dim);
+}
+
+.analyst-msg.assistant {
+  color: #ffcf66;
+  border-left: 2px solid var(--amber-dim);
+  padding-left: 8px;
+}
+
+.analyst-msg.error {
+  color: var(--red);
+  border-left: 2px solid var(--red);
+  padding-left: 8px;
+}
+
+.analyst-msg.pending {
+  color: var(--amber-dim);
+  font-style: italic;
+}
+
+.analyst-input-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+}
+
+.analyst-prompt {
+  color: var(--amber-dim);
+}
+
+.analyst-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--amber);
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.analyst-input::placeholder {
+  color: var(--amber-dim);
+}
+
+.analyst-input:disabled {
+  color: var(--amber-dim);
+}
+
 @media (max-width: 900px) {
   .grid {
     grid-template-columns: 1fr;
@@ -214,6 +308,16 @@ html, body {
       "watchlist"
       "chart"
       "metrics"
-      "news";
+      "news"
+      "macro"
+      "analyst";
+  }
+
+  .macro-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .analyst-tile {
+    height: 400px;
   }
 }
