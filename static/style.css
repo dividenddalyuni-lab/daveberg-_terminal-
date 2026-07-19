@@ -52,7 +52,8 @@ html, body {
   grid-template-areas:
     "watchlist chart"
     "metrics news"
-    "macro analyst";
+    "macro analyst"
+    "cryptonews cryptonews";
 }
 
 .tile {
@@ -67,6 +68,11 @@ html, body {
 .metrics-tile { grid-area: metrics; }
 .news-tile { grid-area: news; }
 .macro-tile { grid-area: macro; }
+.crypto-news-tile {
+  grid-area: cryptonews;
+  max-height: 260px;
+  overflow-y: auto;
+}
 .analyst-tile {
   grid-area: analyst;
   display: flex;
@@ -310,7 +316,8 @@ html, body {
       "metrics"
       "news"
       "macro"
-      "analyst";
+      "analyst"
+      "cryptonews";
   }
 
   .macro-grid {
