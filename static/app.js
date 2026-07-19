@@ -165,6 +165,33 @@ async function loadNews() {
   }
 }
 
+async function loadCryptoNews() {
+  const container = document.getElementById("crypto-news-body");
+  try {
+    const res = await fetch("/api/crypto-news");
+    if (!res.ok) throw new Error("crypto news fetch failed");
+    const data = await res.json();
+    if (!data.length) {
+      container.innerHTML = `<div class="news-empty">Keine Reuters Crypto-News verfügbar.</div>`;
+      return;
+    }
+    container.innerHTML = "";
+    data.forEach((item) => {
+      const div = document.createElement("div");
+      div.className = "news-item";
+      const published = item.published ? new Date(item.published).toLocaleString("de-DE") : "";
+      div.innerHTML = `
+        <a href="${item.link || "#"}" target="_blank" rel="noopener noreferrer">${item.title}</a>
+        <div class="news-meta">${item.publisher || ""} ${published ? "· " + published : ""}</div>
+      `;
+      container.appendChild(div);
+    });
+  } catch (err) {
+    console.error("crypto news load failed", err);
+    container.innerHTML = `<div class="news-empty">Fehler beim Laden der Crypto-News.</div>`;
+  }
+}
+
 function fmtMacroPct(v) {
   if (v === null || v === undefined) return "N/A";
   return v.toFixed(2) + "%";
@@ -295,10 +322,12 @@ function init() {
   loadWatchlist();
   refreshDetail();
   loadMacro();
+  loadCryptoNews();
 
   setInterval(() => {
     loadWatchlist();
     refreshDetail();
+    loadCryptoNews();
   }, REFRESH_MS);
 
   setInterval(loadMacro, 3600000);

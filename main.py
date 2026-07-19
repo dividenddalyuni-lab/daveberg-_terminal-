@@ -207,6 +207,33 @@ def get_quote(symbol: str):
     }
 
 
+def _parse_news_entry(entry: dict):
+    content = entry.get("content", entry)
+    title = content.get("title") or entry.get("title")
+    if not title:
+        return None
+    link = (
+        (content.get("canonicalUrl") or {}).get("url")
+        or (content.get("clickThroughUrl") or {}).get("url")
+        or entry.get("link")
+    )
+    publisher = (content.get("provider") or {}).get("displayName") or entry.get(
+        "publisher"
+    )
+    pub_date = content.get("pubDate")
+    if pub_date:
+        published = pub_date
+    else:
+        ts = entry.get("providerPublishTime")
+        published = datetime.utcfromtimestamp(ts).isoformat() if ts else None
+    return {
+        "title": title,
+        "publisher": publisher,
+        "link": link,
+        "published": published,
+    }
+
+
 @app.get("/api/news/{symbol}")
 def get_news(symbol: str):
     try:
@@ -216,35 +243,33 @@ def get_news(symbol: str):
 
     items = []
     for entry in news[:10]:
-        content = entry.get("content", entry)
-        title = content.get("title") or entry.get("title")
-        if not title:
-            continue
-        link = (
-            (content.get("canonicalUrl") or {}).get("url")
-            or (content.get("clickThroughUrl") or {}).get("url")
-            or entry.get("link")
-        )
-        publisher = (content.get("provider") or {}).get("displayName") or entry.get(
-            "publisher"
-        )
-        pub_date = content.get("pubDate")
-        if pub_date:
-            published = pub_date
-        else:
-            ts = entry.get("providerPublishTime")
-            published = (
-                datetime.utcfromtimestamp(ts).isoformat() if ts else None
-            )
-        items.append(
-            {
-                "title": title,
-                "publisher": publisher,
-                "link": link,
-                "published": published,
-            }
-        )
+        item = _parse_news_entry(entry)
+        if item:
+            items.append(item)
     return items
+
+
+CRYPTO_NEWS_SYMBOL = "BTC-USD"
+
+
+@app.get("/api/crypto-news")
+def get_crypto_news():
+    try:
+        news = cached(
+            f"news:{CRYPTO_NEWS_SYMBOL}",
+            120,
+            lambda: yf.Ticker(CRYPTO_NEWS_SYMBOL).news or [],
+        )
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail=str(exc))
+
+    items = []
+    for entry in news:
+        item = _parse_news_entry(entry)
+        if item and item["publisher"] and "reuters" in item["publisher"].lower():
+            items.append(item)
+    items.sort(key=lambda i: i["published"] or "", reverse=True)
+    return items[:10]
 
 
 ANALYST_MODEL = "claude-sonnet-4-6"
