@@ -1,6 +1,6 @@
 # Seraphin Terminal
 
-Ein Bloomberg-Terminal-inspiriertes Finanz-Dashboard: schwarzer Hintergrund, amber Monospace-Schrift, Kachel-Layout. Backend liefert Kursdaten über [yfinance](https://pypi.org/project/yfinance/), Frontend ist statisches HTML/JS mit Chart.js — kein Framework.
+Ein Finanz-Dashboard im Look des Bloomberg Terminals: Kommandozeile mit GO-Key, Security-Header, dichte Panels mit Funktions-Mnemonics (W, GP, DES, CN, ECO, ASK), Ticker-Laufband und Statuszeile. Backend liefert Kursdaten über [yfinance](https://pypi.org/project/yfinance/), Frontend ist statisches HTML/JS mit Chart.js — kein Framework.
 
 ## Features
 
@@ -11,7 +11,8 @@ Ein Bloomberg-Terminal-inspiriertes Finanz-Dashboard: schwarzer Hintergrund, amb
 - **Makro-Panel**: Inflation (CPI) Deutschland & USA, EZB- und Fed-Leitzins, EUR/USD, 10J Bund- und Treasury-Rendite — Daten über [OpenBB](https://pypi.org/project/openbb/), stündlich gecacht. Quellen ohne Daten/API-Key zeigen `N/A` statt abzustürzen.
 - **KI-Analyst**: Chat-Panel unten rechts, das die Anthropic API (`claude-sonnet-4-6`) mit aktuellem Kontext (Watchlist, Kennzahlen, News des gewählten Tickers, Makrodaten) füttert. Antwortet auf Deutsch, kurz und sachlich — gibt grundsätzlich keine Kauf-/Verkaufsempfehlungen.
 - **Auto-Refresh** aller Daten alle 60 Sekunden (Makrodaten stündlich)
-- Header mit Titel und Live-Uhrzeit
+- **Kommandozeile** wie am Terminal: einfach lostippen, z. B. `NVDA` + Enter, `GP`, `SAP.DE DES` oder `MSFT CN` — Ticker wechseln und/oder Panel ansteuern
+- Header mit Live-Uhrzeit, Laufband mit Watchlist-Kursen, Kurs-Flash bei Preisänderung
 
 ## Setup
 
@@ -40,7 +41,7 @@ Danach im Browser öffnen: [http://localhost:8000](http://localhost:8000)
 ```
 main.py            FastAPI-Backend (REST-Endpunkte, liefert das Frontend aus)
 static/index.html  Seitenstruktur
-static/style.css    Bloomberg-Style (schwarz/amber, Kacheln)
+static/style.css    Bloomberg-Terminal-Style (schwarz/orange, Panels, Laufband)
 static/app.js       Frontend-Logik (Fetch, Chart.js, Auto-Refresh)
 requirements.txt    Python-Abhängigkeiten
 ```

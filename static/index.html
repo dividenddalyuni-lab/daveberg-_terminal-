@@ -4,88 +4,155 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>SERAPHIN TERMINAL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="/static/style.css" />
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 </head>
 <body>
-<header class="header">
-  <div class="header-title">SERAPHIN TERMINAL</div>
-  <div class="header-clock" id="clock">--:--:--</div>
-</header>
+<div class="terminal">
 
-<main class="grid">
-  <section class="tile watchlist-tile">
-    <div class="tile-title">WATCHLIST</div>
-    <table class="watchlist-table">
-      <thead>
-        <tr>
-          <th>SYMBOL</th>
-          <th>PRICE</th>
-          <th>CHG</th>
-          <th>CHG %</th>
-        </tr>
-      </thead>
-      <tbody id="watchlist-body">
-      </tbody>
-    </table>
-  </section>
+  <!-- Kommandozeile -->
+  <header class="cmdbar">
+    <div class="cmd-brand">SERAPHIN</div>
+    <form class="cmd-form" id="cmd-form" autocomplete="off">
+      <input type="text" id="cmd-input" class="cmd-input" spellcheck="false"
+             placeholder="Ticker oder Funktion (GP, DES, CN, ECO, ASK) eingeben" />
+      <button type="submit" class="go-key">GO</button>
+    </form>
+    <div class="cmd-clock">
+      <span id="clock-date">--.--.--</span>
+      <span id="clock">--:--:--</span>
+    </div>
+  </header>
 
-  <section class="tile chart-tile">
-    <div class="tile-title">
-      <span id="chart-title">CHART</span>
-      <div class="range-buttons">
-        <button class="range-btn active" data-range="1M">1M</button>
-        <button class="range-btn" data-range="6M">6M</button>
-        <button class="range-btn" data-range="1J">1J</button>
+  <!-- Security-Header -->
+  <div class="secbar">
+    <div class="sec-id">
+      <span class="sec-ticker" id="sec-ticker">AAPL US</span>
+      <span class="sec-type" id="sec-type">Equity</span>
+      <span class="sec-name" id="sec-name"></span>
+    </div>
+    <div class="sec-quote">
+      <span class="sec-arrow" id="sec-arrow"></span>
+      <span class="sec-price" id="sec-price">--</span>
+      <span class="sec-chg" id="sec-chg">--</span>
+      <span class="sec-chg" id="sec-pct">--</span>
+      <span class="sec-ccy" id="sec-ccy"></span>
+    </div>
+    <nav class="fn-menu">
+      <button class="fn-btn" data-fn="W"><span class="fn-num">1)</span> Watchlist</button>
+      <button class="fn-btn" data-fn="GP"><span class="fn-num">2)</span> Chart</button>
+      <button class="fn-btn" data-fn="DES"><span class="fn-num">3)</span> Beschreibung</button>
+      <button class="fn-btn" data-fn="CN"><span class="fn-num">4)</span> News</button>
+      <button class="fn-btn" data-fn="ECO"><span class="fn-num">5)</span> Makro</button>
+      <button class="fn-btn" data-fn="ASK"><span class="fn-num">6)</span> Analyst</button>
+    </nav>
+  </div>
+
+  <main class="grid">
+    <section class="panel watchlist-panel" data-fn="W">
+      <div class="panel-hdr"><span><span class="pn">1)</span> Watchlist</span><span class="mn">W</span></div>
+      <div class="panel-body">
+        <table class="bb-table watchlist-table">
+          <thead>
+            <tr>
+              <th>Ticker</th>
+              <th class="r">Last</th>
+              <th class="r">Net Chg</th>
+              <th class="r">%Chg</th>
+            </tr>
+          </thead>
+          <tbody id="watchlist-body"></tbody>
+        </table>
       </div>
-    </div>
-    <canvas id="price-chart"></canvas>
-  </section>
+    </section>
 
-  <section class="tile metrics-tile">
-    <div class="tile-title">KENNZAHLEN</div>
-    <div class="metrics-grid" id="metrics-body">
-      <div class="metric"><span class="metric-label">KGV</span><span class="metric-value" id="m-pe">--</span></div>
-      <div class="metric"><span class="metric-label">MARKET CAP</span><span class="metric-value" id="m-cap">--</span></div>
-      <div class="metric"><span class="metric-label">52W HIGH</span><span class="metric-value" id="m-high">--</span></div>
-      <div class="metric"><span class="metric-label">52W LOW</span><span class="metric-value" id="m-low">--</span></div>
-    </div>
-  </section>
+    <section class="panel chart-panel" data-fn="GP">
+      <div class="panel-hdr">
+        <span><span class="pn">2)</span> <span id="chart-title">Chart</span></span>
+        <div class="range-buttons">
+          <button class="range-btn active" data-range="1M">1M</button>
+          <button class="range-btn" data-range="6M">6M</button>
+          <button class="range-btn" data-range="1J">1J</button>
+          <span class="mn">GP</span>
+        </div>
+      </div>
+      <div class="panel-body chart-wrap">
+        <canvas id="price-chart"></canvas>
+      </div>
+    </section>
 
-  <section class="tile news-tile">
-    <div class="tile-title">NEWS</div>
-    <div class="news-list" id="news-body">
-      <div class="news-empty">Ticker auswählen...</div>
-    </div>
-  </section>
+    <section class="panel metrics-panel" data-fn="DES">
+      <div class="panel-hdr"><span><span class="pn">3)</span> Beschreibung</span><span class="mn">DES</span></div>
+      <div class="panel-body">
+        <div class="des-name" id="des-name">--</div>
+        <dl class="kv" id="metrics-body">
+          <div class="kv-row"><dt>KGV (trailing)</dt><dd id="m-pe">--</dd></div>
+          <div class="kv-row"><dt>Market Cap</dt><dd id="m-cap">--</dd></div>
+          <div class="kv-row"><dt>52W Hoch</dt><dd id="m-high">--</dd></div>
+          <div class="kv-row"><dt>52W Tief</dt><dd id="m-low">--</dd></div>
+          <div class="kv-row"><dt>Währung</dt><dd id="m-ccy">--</dd></div>
+        </dl>
+      </div>
+    </section>
 
-  <section class="tile macro-tile">
-    <div class="tile-title">MAKRO</div>
-    <div class="metrics-grid macro-grid" id="macro-body">
-      <div class="metric"><span class="metric-label">CPI DEUTSCHLAND (YoY)</span><span class="metric-value" id="mac-cpi-de">--</span></div>
-      <div class="metric"><span class="metric-label">CPI USA (YoY)</span><span class="metric-value" id="mac-cpi-us">--</span></div>
-      <div class="metric"><span class="metric-label">EZB-LEITZINS</span><span class="metric-value" id="mac-ecb">--</span></div>
-      <div class="metric"><span class="metric-label">FED-LEITZINS</span><span class="metric-value" id="mac-fed">--</span></div>
-      <div class="metric"><span class="metric-label">EUR/USD</span><span class="metric-value" id="mac-eurusd">--</span></div>
-      <div class="metric"><span class="metric-label">10J BUND-RENDITE</span><span class="metric-value" id="mac-bund">--</span></div>
-      <div class="metric"><span class="metric-label">10J TREASURY-RENDITE</span><span class="metric-value" id="mac-treasury">--</span></div>
-    </div>
-  </section>
+    <section class="panel news-panel" data-fn="CN">
+      <div class="panel-hdr"><span><span class="pn">4)</span> News <span class="hdr-sub" id="news-symbol"></span></span><span class="mn">CN</span></div>
+      <div class="panel-body news-list" id="news-body">
+        <div class="empty">Ticker auswählen...</div>
+      </div>
+    </section>
 
-  <section class="tile analyst-tile">
-    <div class="tile-title">
-      <span>ANALYST</span>
-      <span id="analyst-symbol-tag"></span>
+    <section class="panel macro-panel" data-fn="ECO">
+      <div class="panel-hdr"><span><span class="pn">5)</span> Makro</span><span class="mn">ECO</span></div>
+      <div class="panel-body">
+        <div class="kv-group">Inflation</div>
+        <dl class="kv">
+          <div class="kv-row"><dt>CPI Deutschland YoY</dt><dd id="mac-cpi-de">--</dd></div>
+          <div class="kv-row"><dt>CPI USA YoY</dt><dd id="mac-cpi-us">--</dd></div>
+        </dl>
+        <div class="kv-group">Leitzinsen</div>
+        <dl class="kv">
+          <div class="kv-row"><dt>EZB Einlagensatz</dt><dd id="mac-ecb">--</dd></div>
+          <div class="kv-row"><dt>Fed Funds (EFFR)</dt><dd id="mac-fed">--</dd></div>
+        </dl>
+        <div class="kv-group">FX &amp; Renditen</div>
+        <dl class="kv">
+          <div class="kv-row"><dt>EUR/USD</dt><dd id="mac-eurusd">--</dd></div>
+          <div class="kv-row"><dt>Bund 10J</dt><dd id="mac-bund">--</dd></div>
+          <div class="kv-row"><dt>Treasury 10J</dt><dd id="mac-treasury">--</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="panel analyst-panel" data-fn="ASK">
+      <div class="panel-hdr">
+        <span><span class="pn">6)</span> KI-Analyst <span class="hdr-sub" id="analyst-symbol-tag"></span></span>
+        <span class="mn">ASK</span>
+      </div>
+      <div class="panel-body analyst-messages" id="analyst-messages">
+        <div class="empty">Frage zu <span id="analyst-hint-symbol">AAPL</span> stellen...</div>
+      </div>
+      <div class="analyst-input-row">
+        <span class="analyst-prompt">&gt;</span>
+        <input type="text" id="analyst-input" class="analyst-input" placeholder="Frage eingeben und Enter drücken..." autocomplete="off" />
+      </div>
+    </section>
+  </main>
+
+  <!-- Laufband + Statuszeile -->
+  <footer class="statusbar">
+    <div class="tape"><div class="tape-track" id="tape-track"></div></div>
+    <div class="status-info">
+      <span class="status-dot"></span>
+      <span>LIVE</span>
+      <span class="status-sep">|</span>
+      <span>Upd <span id="last-update">--:--:--</span></span>
     </div>
-    <div class="analyst-messages" id="analyst-messages">
-      <div class="analyst-empty">Frage zu <span id="analyst-hint-symbol">AAPL</span> stellen...</div>
-    </div>
-    <div class="analyst-input-row">
-      <span class="analyst-prompt">&gt;</span>
-      <input type="text" id="analyst-input" class="analyst-input" placeholder="Frage eingeben und Enter drücken..." autocomplete="off" />
-    </div>
-  </section>
-</main>
+  </footer>
+</div>
 
 <script src="/static/app.js"></script>
 </body>
